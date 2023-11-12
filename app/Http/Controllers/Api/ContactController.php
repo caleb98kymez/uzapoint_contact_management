@@ -28,12 +28,13 @@ class ContactController extends Controller
         return new ContactResource($contact);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact)
+    public function show($groupId)
     {
-        return new ContactResource($contact);
+        // Fetch contacts based on the group ID
+        $contacts = Contact::where('group_id', $groupId)->get();
+
+        // Return the contacts as a JSON response
+        return response()->json($contacts);
     }
 
     /**

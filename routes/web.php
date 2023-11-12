@@ -29,6 +29,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/contacts', function () {
+    return Inertia::render('Contacts');
+})->middleware(['auth', 'verified'])->name('contacts');
+
+Route::get('/contacts/{groupId}', function ($groupId) {
+    return Inertia::render('Contacts', ['groupId' => $groupId]);
+})->name('contacts.byGroup');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
