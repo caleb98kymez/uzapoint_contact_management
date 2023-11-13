@@ -11,7 +11,7 @@ import { useRoute } from 'vue-router';
 
 export default {
   setup() {
-    const { contactGroups, getContactGroups, destroyContactGroup, addNewContactGroup, editContactGroup } = useContactGroups();  // Update the function calls
+    const { contactGroups, getContactGroups, destroyContactGroup, addNewContactGroup, editContactGroup } = useContactGroups();  
 
     onMounted(getContactGroups);
 
@@ -20,12 +20,13 @@ export default {
     const showAddNewGroupModal = ref(false);
     const editedContactGroup = ref({ id: null, name: '', description: '', noofcontacts: 0 });
     const newContactGroupData = ref({ name: '', description: '', noofcontacts: 0 });
+    console.log(contactGroups._rawValue)
 
     const router = useRoute();
 
     const saveUpdatedContactGroup = async () => {
       await editContactGroup(editedContactGroup.value);
-      await getContactGroups(contactGroups);
+      await getContactGroups();
       showEditGroupModal.value = false;
     };
 
@@ -148,11 +149,11 @@ export default {
         </div>
         <div class="modal-body">
           <label for="newGroupName">Name:</label>
-          <input v-model="newContactGroupData.name" type="text" id="newGroupName" />
+          <input  type="text" id="newGroupName" />
           <label for="newGroupDescription">Description:</label>
-          <input v-model="newContactGroupData.description" type="text" id="newGroupDescription" />
+          <input  type="text" id="newGroupDescription" />
           <label for="newGroupNoOfContacts">No. of Contacts:</label>
-          <input v-model="newContactGroupData.noofcontacts" type="number" id="newGroupNoOfContacts" />
+          <input  type="number" id="newGroupNoOfContacts" />
         </div>
         <div class="modal-footer">
           <SecondaryButton @click="closeAddNewGroupModal">Cancel</SecondaryButton>

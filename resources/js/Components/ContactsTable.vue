@@ -5,18 +5,23 @@ import SecondaryButton from './SecondaryButton.vue';
 import PrimaryButton from './PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import useContacts from './composable/contacts';
+import useContactGroups from './composable/contactGroups';
 
 export default {
   setup() {
     const { contacts, getContacts, destroyContact, addNewContact, editContact } = useContacts();
+    const { contactGroups, getContactGroups } = useContactGroups();
 
     onMounted(getContacts);
 
     const confirmingContactDeletion = ref(false);
     const showEditModal = ref(false);
     const showAddNewModal = ref(false);
-    const editedContact = ref({ id: null, name: '', email: '', phone: '' });
-    const newContactData = ref({ name: '', email: '', phone: '' });
+    const editedContact = ref({ id: null, name: '', email: '', phone: '', groupId: '' });
+    const newContactData = ref({ name: '', email: '', phone: '', groupId: '' });
+    const selectedGroup = ref(null); 
+    console.log(contacts)
+    console.log(contactGroups)
 
     const saveUpdatedContact = async () => {
       await editContact(editedContact.value);
@@ -25,7 +30,7 @@ export default {
     };
 
     const saveNewContact = async () => {
-      await addNewContact(newContactData.value);
+      await addNewContact({ ...newContactData.value, groupId: selectedGroup.value });
       await getContacts();
       showAddNewModal.value = false;
       newContactData.value = { name: '', email: '', phone: '' };
@@ -43,6 +48,7 @@ export default {
     const closeEditModal = () => {
       showEditModal.value = false;
     };
+
     const closeAddNewModal = () => {
       showAddNewModal.value = false;
     };
@@ -57,6 +63,7 @@ export default {
       showEditModal.value = true;
       editedContact.value = { ...contact };
     };
+
     const openAddNewModal = () => {
       showAddNewModal.value = true;
     };
@@ -67,6 +74,7 @@ export default {
       showAddNewModal,
       editedContact,
       contacts,
+      contactGroups,
       addNewContact,
       saveUpdatedContact,
       deleteContact,
@@ -77,6 +85,7 @@ export default {
       closeAddNewModal,
       openAddNewModal,
       saveNewContact,
+      getContactGroups,
     };
   },
   components: { DangerButton, SecondaryButton, Modal, PrimaryButton },
@@ -138,6 +147,9 @@ export default {
           <input v-model="editedContact.email" type="email" id="editEmail" />
           <label for="editPhone">Phone:</label>
           <input v-model="editedContact.phone" type="text" id="editPhone" />
+          <select v-model="selectedGroup" id="groupSelector">
+            <option v-for="group in contactGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
+          </select>
         </div>
         <div class="modal-footer">
           <SecondaryButton @click="closeEditModal">Cancel</SecondaryButton>
@@ -153,11 +165,15 @@ export default {
         <div class="modal-body">
           <!-- Autofill the fields in the edit modal -->
           <label for="editName">Name:</label>
-          <input v-model="newContactData.name" type="text" id="editName" />
+          <input  type="text" id="editName" />
           <label for="editEmail">Email:</label>
-          <input v-model="newContactData.email" type="email" id="editEmail" />
+          <input  type="email" id="editEmail" />
           <label for="editPhone">Phone:</label>
-          <input v-model="newContactData.phone" type="text" id="editPhone" />
+          <input  type="text" id="editPhone" />
+          <label for="groupSelector">Select Group:</label>
+      <select v-model="selectedGroup" id="groupSelector">
+        <option v-for="group in contactGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
+      </select>
         </div>
         <div class="modal-footer">
           <SecondaryButton @click="closeAddNewModal">Cancel</SecondaryButton>
