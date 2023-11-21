@@ -30,6 +30,7 @@ export default function useContactGroups() {
 
     const addNewContactGroup = async (newContactGroup) => {
         try {
+            console.log(newContactGroup);
             await axios.post(apiGroupsUrl, newContactGroup);
             await getContactGroups();
         } catch (error) {
